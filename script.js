@@ -5,7 +5,7 @@ const addBtn = document.getElementById('addBtn');
 const texteInput = document.getElementById('texteInput');
 const reponseInput = document.getElementById('reponseInput');
 
-const API_BASE = 'https://carambar-backend-figj.onrender.com/blagues/lesblagues';
+const API_BASE = 'https://carambar-backend-figj.onrender.com/blagues';
 
 /**
  * Crée une carte HTML pour une blague
