@@ -5,14 +5,12 @@ const addBtn = document.getElementById('addBtn');
 const texteInput = document.getElementById('texteInput');
 const reponseInput = document.getElementById('reponseInput');
 
-const API_BASE = 'https://carambar-backend-figj.onrender.com/blagues/lesblagues';
+// ✔️ URL correcte
+const API_BASE = 'https://carambar-backend-figj.onrender.com/blagues';
 
 /**
  * Crée une carte HTML pour une blague
- * @param {Object} blague - { question, reponse }
- * @returns {string} HTML
  */
-
 function createBlagueCard(blague) {
   return `
     <div class="p-6 bg-white border-2 border-red-500 text-red-900 rounded-2xl shadow-md w-72 hover:shadow-xl hover:scale-105 transform transition-all duration-300">
@@ -21,13 +19,13 @@ function createBlagueCard(blague) {
     </div>
   `;
 }
+
 async function fetchBlagues() {
   try {
-    const res = await fetch(API_BASE);
+    const res = await fetch(`${API_BASE}/lesblagues`);
     if (!res.ok) throw new Error('Erreur lors du fetch des blagues');
     
-    const data = await res.json();
-    const blagues = Array.isArray(data) ? data : data.blagues || [];
+    const blagues = await res.json();
 
     blaguesContainer.innerHTML = blagues.length 
       ? blagues.map(createBlagueCard).join('')
@@ -46,8 +44,7 @@ async function fetchRandomBlague() {
     const res = await fetch(`${API_BASE}/random`);
     if (!res.ok) throw new Error('Erreur lors de la récupération de la blague aléatoire');
 
-    const b = await res.json();
-    const blague = b.question ? b : b.blague || { question: 'Erreur', reponse: '' };
+    const blague = await res.json();
 
     randomBlagueContainer.innerHTML = `
       <p class="font-semibold mb-2">${blague.question}</p>
