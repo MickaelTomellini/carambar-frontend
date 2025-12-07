@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Carambar Blagues - Découvrez et ajoutez des blagues aléatoires !">
+  <title>Carambar Blagues</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-yellow-300 p-6">
+
+  <header class="text-center mb-12">
+    <img
+      src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fassets.stickpng.com%2Fimages%2F6015a77d5cc23e000407ba55.png&f=1&nofb=1&ipt=fd14c1205dcf6a589f84e5ea474f1bd8bb1928ac8a6a1a73fe3366c9d3ef63bc"
+      alt="Carambar Blagues" class="mx-auto w-72 md:w-96 hover:scale-105 transition-transform duration-300">
+  </header>
+
+  <main>
+
+    <section id="randomBlague"
+      class="mb-10 p-4 bg-white border-4 border-red-500 text-red-900 rounded-2xl shadow text-center font-semibold text-lg">
+    </section>
+
+    <div class="text-center mb-12">
+      <button id="randomBtn"
+        class="px-8 py-3 bg-red-600 text-lg text-yellow-300 rounded-2xl shadow-md hover:bg-red-700 hover:shadow-lg transition-all duration-300 font-semibold">
+        Blague aléatoire
+      </button>
+    </div>
+
+
+    <section class="p-6 bg-red-700 rounded-2xl shadow-xl max-w-md mx-auto mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-white text-center">Ajoute une blague</h2>
+
+      <label for="texteInput" class="sr-only">Texte de la blague</label>
+      <textarea id="texteInput" placeholder="Ta Blague ici"
+        class="border-2 border-red-400 p-3 w-full mb-4 rounded-lg focus:ring-2 focus:ring-red-300 resize-none h-32"></textarea>
+
+
+      <label for="reponseInput" class="sr-only">Réponse de la blague</label>
+      <textarea id="reponseInput" placeholder="Réponse de ta blague ici"
+        class="border-2 border-red-400 p-3 w-full mb-4 rounded-lg focus:ring-2 focus:ring-red-300 resize-none h-32"></textarea>
+
+      <button id="addBtn"
+        class="px-6 py-3 bg-yellow-400 text-red-700 rounded-2xl w-full font-semibold hover:bg-yellow-200 transition-all duration-300">
+        Ajouter
+      </button>
+    </section>
+
+    <section id="blagues" class="flex flex-wrap justify-center gap-6 mb-10"></section>
+  </main>
+
+  <script src="script.js" defer></script>
+
+</body>
+
+</html>

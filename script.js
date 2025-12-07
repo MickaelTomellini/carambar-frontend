@@ -1,0 +1,93 @@
+const blaguesContainer = document.getElementById('blagues');
+const randomBtn = document.getElementById('randomBtn');
+const randomBlagueContainer = document.getElementById('randomBlague');
+const addBtn = document.getElementById('addBtn');
+const texteInput = document.getElementById('texteInput');
+const reponseInput = document.getElementById('reponseInput');
+
+const API_BASE = 'http://localhost:3001/blagues';
+
+/**
+ * @param {Object} blague - objet blague { texte, reponse }
+ * @returns {string} HTML de la carte
+ */
+
+function createBlagueCard(blague) {
+  return `
+    <div class="p-6 bg-white border-2 border-red-500 text-red-900 rounded-2xl shadow-md w-72 hover:shadow-xl hover:scale-105 transform transition-all duration-300">
+      <p class="font-semibold mb-2">${blague.texte}</p>
+      <p class="text-red-700 italic">Réponse: ${blague.reponse || '...'}</p>
+    </div>
+  `;
+}
+
+async function fetchBlagues() {
+  try {
+    const res = await fetch(API_BASE);
+    if (!res.ok) throw new Error('Erreur lors du fetch des blagues');
+    const data = await res.json();
+    blaguesContainer.innerHTML = data.map(createBlagueCard).join('');
+  } catch (err) {
+    console.error('Erreur fetchBlagues:', err);
+    blaguesContainer.innerHTML = `<p class="text-red-700 font-semibold">Impossible de charger les blagues.</p>`;
+  }
+}
+
+randomBtn.addEventListener('click', async () => {
+  try {
+    randomBtn.disabled = true;
+    randomBtn.textContent = 'Chargement...';
+
+    const res = await fetch(`${API_BASE}/random`);
+    if (!res.ok) throw new Error('Erreur lors de la récupération de la blague aléatoire');
+    const b = await res.json();
+
+    randomBlagueContainer.innerHTML = `
+      <p class="font-semibold mb-2">${b.texte}</p>
+      <p class="text-red-700 italic">Réponse: ${b.reponse || '...'}</p>
+    `;
+  } catch (err) {
+    console.error('Erreur randomBlague:', err);
+    randomBlagueContainer.innerHTML = `<p class="text-red-700 font-semibold">Impossible de charger une blague aléatoire.</p>`;
+  } finally {
+    randomBtn.disabled = false;
+    randomBtn.textContent = 'Blague aléatoire';
+  }
+});
+
+addBtn.addEventListener('click', async () => {
+  const texte = texteInput.value.trim();
+  const reponse = reponseInput.value.trim();
+
+  if (!texte || !reponse) {
+    alert('Veuillez remplir la blague et sa réponse !');
+    return;
+  }
+
+  try {
+    addBtn.disabled = true;
+    addBtn.textContent = 'Ajout en cours...';
+
+    const res = await fetch(`${API_BASE}/ajouterblague`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texte, reponse })
+    });
+
+    if (!res.ok) throw new Error('Erreur lors de l’ajout');
+
+    await res.json();
+    fetchBlagues();
+    texteInput.value = '';
+    reponseInput.value = '';
+    alert('Blague ajoutée avec succès !');
+  } catch (err) {
+    console.error('Erreur addBlague:', err);
+    alert('Impossible d’ajouter la blague.');
+  } finally {
+    addBtn.disabled = false;
+    addBtn.textContent = 'Ajouter';
+  }
+});
+
+fetchBlagues();
