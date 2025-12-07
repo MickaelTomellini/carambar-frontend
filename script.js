@@ -5,12 +5,8 @@ const addBtn = document.getElementById('addBtn');
 const texteInput = document.getElementById('texteInput');
 const reponseInput = document.getElementById('reponseInput');
 
-// ✔️ URL correcte
 const API_BASE = 'https://carambar-backend-figj.onrender.com/blagues';
 
-/**
- * Crée une carte HTML pour une blague
- */
 function createBlagueCard(blague) {
   return `
     <div class="p-6 bg-white border-2 border-red-500 text-red-900 rounded-2xl shadow-md w-72 hover:shadow-xl hover:scale-105 transform transition-all duration-300">
@@ -25,7 +21,8 @@ async function fetchBlagues() {
     const res = await fetch(`${API_BASE}/lesblagues`);
     if (!res.ok) throw new Error('Erreur lors du fetch des blagues');
     
-    const blagues = await res.json();
+    const data = await res.json();
+    const blagues = Array.isArray(data) ? data : data.blagues || [];
 
     blaguesContainer.innerHTML = blagues.length 
       ? blagues.map(createBlagueCard).join('')
@@ -35,6 +32,7 @@ async function fetchBlagues() {
     blaguesContainer.innerHTML = `<p class="text-red-700 font-semibold">Impossible de charger les blagues.</p>`;
   }
 }
+
 
 async function fetchRandomBlague() {
   try {
