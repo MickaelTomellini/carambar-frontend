@@ -8,43 +8,50 @@ const reponseInput = document.getElementById('reponseInput');
 const API_BASE = 'https://carambar-backend-figj.onrender.com/blagues';
 
 /**
- * @param {Object} blague - objet blague { texte, reponse }
- * @returns {string} HTML de la carte
+ * Crée une carte HTML pour une blague
+ * @param {Object} blague - { question, reponse }
+ * @returns {string} HTML
  */
 
 function createBlagueCard(blague) {
   return `
     <div class="p-6 bg-white border-2 border-red-500 text-red-900 rounded-2xl shadow-md w-72 hover:shadow-xl hover:scale-105 transform transition-all duration-300">
-      <p class="font-semibold mb-2">${blague.texte}</p>
+      <p class="font-semibold mb-2">${blague.question}</p>
       <p class="text-red-700 italic">Réponse: ${blague.reponse || '...'}</p>
     </div>
   `;
 }
-
 async function fetchBlagues() {
   try {
     const res = await fetch(API_BASE);
     if (!res.ok) throw new Error('Erreur lors du fetch des blagues');
+    
     const data = await res.json();
-    blaguesContainer.innerHTML = data.map(createBlagueCard).join('');
+    const blagues = Array.isArray(data) ? data : data.blagues || [];
+
+    blaguesContainer.innerHTML = blagues.length 
+      ? blagues.map(createBlagueCard).join('')
+      : `<p class="text-red-700 font-semibold">Aucune blague trouvée.</p>`;
   } catch (err) {
     console.error('Erreur fetchBlagues:', err);
     blaguesContainer.innerHTML = `<p class="text-red-700 font-semibold">Impossible de charger les blagues.</p>`;
   }
 }
 
-randomBtn.addEventListener('click', async () => {
+async function fetchRandomBlague() {
   try {
     randomBtn.disabled = true;
     randomBtn.textContent = 'Chargement...';
 
     const res = await fetch(`${API_BASE}/random`);
     if (!res.ok) throw new Error('Erreur lors de la récupération de la blague aléatoire');
+
     const b = await res.json();
+    const blague = b.question ? b : b.blague || { question: 'Erreur', reponse: '' };
 
     randomBlagueContainer.innerHTML = `
-      <p class="font-semibold mb-2">${b.texte}</p>
-      <p class="text-red-700 italic">Réponse: ${b.reponse || '...'}</p>
+      <p class="font-semibold mb-2">${blague.question}</p>
+      <p class="text-red-700 italic">Réponse: ${blague.reponse || '...'}</p>
     `;
   } catch (err) {
     console.error('Erreur randomBlague:', err);
@@ -53,13 +60,13 @@ randomBtn.addEventListener('click', async () => {
     randomBtn.disabled = false;
     randomBtn.textContent = 'Blague aléatoire';
   }
-});
+}
 
-addBtn.addEventListener('click', async () => {
-  const texte = texteInput.value.trim();
+async function addBlague() {
+  const question = texteInput.value.trim();
   const reponse = reponseInput.value.trim();
 
-  if (!texte || !reponse) {
+  if (!question || !reponse) {
     alert('Veuillez remplir la blague et sa réponse !');
     return;
   }
@@ -71,13 +78,13 @@ addBtn.addEventListener('click', async () => {
     const res = await fetch(`${API_BASE}/ajouterblague`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ texte, reponse })
+      body: JSON.stringify({ question, reponse })
     });
 
     if (!res.ok) throw new Error('Erreur lors de l’ajout');
 
-    await res.json();
-    fetchBlagues();
+    await res.json(); 
+    await fetchBlagues(); 
     texteInput.value = '';
     reponseInput.value = '';
     alert('Blague ajoutée avec succès !');
@@ -88,6 +95,9 @@ addBtn.addEventListener('click', async () => {
     addBtn.disabled = false;
     addBtn.textContent = 'Ajouter';
   }
-});
+}
+
+randomBtn.addEventListener('click', fetchRandomBlague);
+addBtn.addEventListener('click', addBlague);
 
 fetchBlagues();
