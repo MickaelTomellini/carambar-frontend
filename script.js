@@ -46,11 +46,11 @@ async function fetchRandomBlague() {
 
     randomBlagueContainer.innerHTML = `
       <p class="font-semibold mb-2">${blague.question}</p>
-      <p class="text-red-700 italic">Réponse: ${blague.reponse || '...'}</p>
+      <p class="text-pink-500 italic">Réponse: ${blague.reponse || '...'}</p>
     `;
   } catch (err) {
     console.error('Erreur randomBlague:', err);
-    randomBlagueContainer.innerHTML = `<p class="text-red-700 font-semibold">Impossible de charger une blague aléatoire.</p>`;
+    randomBlagueContainer.innerHTML = `<p class="text-yellow-400 font-semibold">Impossible de charger une blague aléatoire.</p>`;
   } finally {
     randomBtn.disabled = false;
     randomBtn.textContent = 'Blague aléatoire';
